@@ -11,6 +11,8 @@ editor_options:
 
 library(tidyverse)
 library(palmerpenguins)
+library(gt)
+library(pkgload)
 ```
 
 # Native pipe
@@ -51,7 +53,7 @@ tidyverse_conflicts()
 #| label: base-r-conflict-1
 #| error: true
 
-devtools::unload("dplyr")
+pkgload::unload("dplyr")
 
 penguins |>
   filter(species == "Adelie")

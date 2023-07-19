@@ -89,20 +89,14 @@ weight_measurements |>
 
 - Run through options
 
+
 Tip: Exploding joins can be hard to debug for students!
 
 Teach students how to diagnose whether the join they performed, and that may not have given an error, is indeed the one they wanted to perform. Did they lose any cases? Did they gain an unexpected amount of cases? Did they perform a join without thinking and take down the entire teaching server? These things happen, particularly if students are working with their own data for an open-ended project!
 
 ## Per operation grouping
 
-- Typical tidyverse pipeline
-
-penguins |>
-  drop_na(sex, body_mass_g) |>
-  group_by(species, sex) |>
-  summarize(mean_bw = mean(body_mass_g)) |>
-  ggplot(aes(x = species, y = mean_bw, fill = sex)) +
-  geom_col(position = "dodge")
+- Run typical tidyverse pipeline and read message
 
 - Add .groups = "drop" to summarize()
 
@@ -119,20 +113,11 @@ But importantly, For new learners, pick one and stick to it.
 
 ## Quality of life improvements to case_when() and if_else()
 
-- Write the code
+- Add
 
-penguins |>
-  mutate(
-    bm_cat = case_when(
-      is.na(body_mass_g) ~ NA,
-      body_mass_g < 3550 ~ "Small",
-      between(body_mass_g, 3550, 4750) ~ "Medium",
-      TRUE ~ "Large"
-    )
-  ) |>
-  relocate(body_mass_g, bm_cat)
+relocate(body_mass_g, bm_cat)
 
-  - Replace
+- Replace
 
   TRUE ~ "Large"
 

@@ -20,8 +20,11 @@ library(pkgload)
 ```{r}
 #| label: pipe
 
-mpg %>%
+mpg |>
   count(class)
+
+mtcars |>
+  summary()
 ```
 
 # Nine core packages in tidyverse 2.0.0
@@ -30,12 +33,21 @@ mpg %>%
 #| label: lubridate
 
 library(tidyverse)
-library(lubridate)
 
 today_n <- 20230719
 class(today_n)
 ymd(today_n)
 class(ymd(today_n))
+
+today_t <- "7/19/2023"
+class(today_t)
+mdy(today_t)
+class(mdy(today_t))
+
+today_s <- "This video is being recorded on 19 July 2023 at 1 pm ET."
+class(today_s)
+dmy_h(today_s, tz = "America/New_York")
+class(dmy_h(today_s, tz = "America/New_York"))
 ```
 
 # Conflict resolution in the tidyverse
@@ -114,7 +126,7 @@ islands
 penguins |>
   left_join(
     islands, 
-    by = c("island" = "name")
+    by = join_by(island == name)
   ) |>
   select(species, island, coordinates)
 ```
@@ -166,7 +178,7 @@ three_penguins |>
 
 # many-to-many relationships
 weight_measurements |>
-  left_join(flipper_measurements, join_by(samp_id))
+  left_join(flipper_measurements, join_by(samp_id, meas_id))
 ```
 
 -   Unmatched cases:
@@ -260,7 +272,7 @@ penguins |>
   drop_na(sex, body_mass_g) |>
   summarize(
     mean_bw = mean(body_mass_g), 
-    .by = species
+    .by = c(species, sex)
   )
 ```
 
@@ -282,9 +294,10 @@ penguins |>
       is.na(body_mass_g) ~ NA,
       body_mass_g < 3550 ~ "Small",
       between(body_mass_g, 3550, 4750) ~ "Medium",
-      TRUE ~ "Large"
+      .default = "Large"
     )
-  )
+  ) |>
+  relocate(body_mass_g, bm_cat)
 ```
 
 -   Better handling of `NA`s in `if_else()`, `case_when()`, and friends:
@@ -294,7 +307,7 @@ penguins |>
 
 penguins |>
   mutate(
-    bm_unit = if_else(!is.na(body_mass_g), paste(body_mass_g, "g"), NA_character_)
+    bm_unit = if_else(!is.na(body_mass_g), paste(body_mass_g, "g"), NA)
   ) |>
   relocate(body_mass_g, bm_unit)
 ```
@@ -345,5 +358,5 @@ penguins |>
   ggplot(
     aes(x = flipper_length_mm, y = body_mass_g)
   ) +
-  geom_smooth(size = 2)
+  geom_smooth(linewidth = 2)
 ```
